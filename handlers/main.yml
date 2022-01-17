@@ -1,0 +1,10 @@
+---
+- name: "systemctl daemon-reload"
+  systemd:
+    daemon-reload: True
+
+- name: "restart satisfactory"
+  systemd:
+    name: satisfactory
+    state: restarted
+...

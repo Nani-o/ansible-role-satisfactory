@@ -1,0 +1,5 @@
+---
+satisfactory_user: "steam"
+satisfactory_home: "/home/{{ satisfactory_user }}"
+satisfactory_install_folder: "{{ satisfactory_home }}/SatisfactoryDedicatedServer"
+...

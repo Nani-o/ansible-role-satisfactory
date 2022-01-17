@@ -1,0 +1,54 @@
+---
+- name: "Add repo multiverse"
+  ansible.builtin.shell: |
+    add-apt-repository multiverse
+    dpkg --add-architecture i386
+  changed_when: False
+
+- name: "Accept steam license"
+  debconf:
+    name: "steam"
+    question: "steam/question"
+    value: "I AGREE"
+    vtype: "select"
+
+- name: "Install steamcmd"
+  ansible.builtin.apt:
+    name:
+      - lib32gcc1
+      - steamcmd
+    state: latest
+    update_cache: True
+
+- name: "Add steam user"
+  ansible.builtin.user:
+    name: "{{ satisfactory_user }}"
+    shell: "/bin/false"
+
+- name: "Create install folder"
+  ansible.builtin.file:
+    path: "{{ satisfactory_install_folder }}"
+    state: directory
+    owner: "{{ satisfactory_user }}"
+    group: "{{ satisfactory_user }}"
+
+- name: "Add systemd template"
+  ansible.builtin.template:
+    src: "satisfactory.service.j2"
+    dest: "/etc/systemd/system/satisfactory.service"
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - systemctl daemon-reload
+    - restart satisfactory
+
+- name: "Flush handlers"
+  meta: flush_handlers
+
+- name: "Make sure service is started and enabled"
+  systemd:
+    name: "satisfactory"
+    state: started
+    enabled: True
+...

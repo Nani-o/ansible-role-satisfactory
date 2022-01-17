@@ -1,0 +1,15 @@
+[Unit]
+Description=Satisfactory Server Service
+After=network.target
+
+[Service]
+User={{ satisfactory_user }}
+ExecStartPre=/usr/games/steamcmd +force_install_dir "{{ satisfactory_install_folder }}" +login anonymous +app_update 1690800 validate +quit
+ExecStart={{ satisfactory_install_folder }}/FactoryServer.sh
+StandardOutput=journal
+Restart=on-failure
+WorkingDirectory={{ satisfactory_install_folder }}
+TimeoutSec=10min
+
+[Install]
+WantedBy=multi-user.target
